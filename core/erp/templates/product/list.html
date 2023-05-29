@@ -1,0 +1,164 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'product/js/list.js' %}"></script>
+    <!-- <script src="https://cdn.datatables.net/plug-ins/1.10.19/api/sum().js"></script> -->
+    <!--font awesome con CDN-->  
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">   -->
+    <link rel="stylesheet" href="{% static 'lib2/fontawesome-5.15.3/css/all.css' %}">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css"> -->
+    <style>
+        .table thead, .table tfoot{
+            background-color: #455a64;
+            color: azure;
+        }
+        @media print {
+            @page {
+              size: 210mm 297mm;
+              margin: 2mm 2mm 2mm 2mm;
+              orphans: 0;
+              widows: 0;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            
+            #myModelDetCardex {
+               zoom:90%;
+               float: left;
+            }
+            
+            
+          }
+        
+    </style>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th scope="col" style="width: 10%;">Codigo</th>
+        <th scope="col" style="width: 12%;">Categoria</th>
+        <th scope="col" style="width: 28%;">Nombre</th>        
+        <th scope="col" style="width: 10%;">Imagen</th>
+        <th scope="col" style="width: 10%;">Precio</th>
+        <th scope="col" style="width: 10%;">Exist.</th>
+        <th scope="col" style="width: 20%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block javascript %}
+
+<!-- <script src="https://cdn.datatables.net/plug-ins/1.10.19/api/sum().js"></script> -->
+<!-- jQuery, Popper.js, Bootstrap JS -->
+<!-- <script src="{% static 'lib/jquery/jquery-3.3.1.min.js' %}"></script>
+<script src="lib/popper/popper.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js"></script> -->
+<!-- datatables JS -->
+<!-- <script type="text/javascript" src="lib/datatables/datatables.min.js"></script>     -->
+<!-- para usar botones en datatables JS -->  
+<!-- <script src="{% static 'lib/datatables/Buttons-1.5.6/js/dataTables.buttons.min.js' %}"></script>  
+<script src="lib/datatables/JSZip-2.5.0/jszip.min.js"></script>    
+<script src="lib/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>    
+<script src="lib/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'lib/datatables/Buttons-1.5.6/js/buttons.html5.min.js' %}"></script> -->
+
+<div class="modal fade" id="myModelDetCardex" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Consulta de
+                        detalle del CARDEX de Movimientos</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
+                </div>
+                <div class="modal-body">
+                    <div id="nProd">
+                        <!-- <h3>Producto: </h3> -->
+                    </div>
+                    
+                    <table class="table table-bordered table-hover" id="tblDetCard">
+                        <thead>
+                        <tr>
+                            
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Folio</th>
+                            <th>Fecha</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Costo Unitario</th> 
+                            <th>$ Cos-Ent</th>
+                            <th>$ Cos-Sal</th>
+                            <th>$ Cos-Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <strong> 'V' - Ventas(Salidas) </strong>
+                    <strong> 'C' - Compras(Entradas)</strong>
+                    <strong> 'R' - Activo </strong>
+                    <strong> 'C' - Cancelado</strong>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>  Cerrar</button>
+                    <button type="button" onclick="javascript:printDiv();" id="printButton" class="btn btn-primary"><i class="fas fa-print"></i> Imprimir</button>
+                    <!-- <a href="javascript:imprSelec('myModelDetCardex')" >Imprimir texto</a> -->
+                  </div>
+            </div>
+        </div>
+    </div>
+    <!-- <script type="text/javascript">
+        $('#printButton').on('click', function () {
+        if ($('.modal').is(':visible')) {
+        var modalId = $(event.target).closest('.modal').attr('id');
+        console.log(modalId);
+        $('body').css('visibility', 'hidden');
+        $("#" + modalId).css('visibility', 'visible');
+        
+        window.print();
+        $('body').css('visibility', 'visible');
+        $('#' + modalId).addClass('modal');
+        } else {
+        window.print();
+        }
+        });
+        </script> -->
+    <script>
+        function printDiv() {
+
+            var printContents = $("#myModelDetCardex").html();
+            var document_html = window.open('', 'PRINT', 'height=600,width=800');
+        
+            document_html.document.write("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" type=\"text/css\"/>");
+            document_html.document.write("<link rel=\"stylesheet\" href=\"https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css\" type=\"text/css\"/>");
+            <!--  -->
+            document_html.document.write("</head><body>");
+            document_html.document.write(printContents);
+            document_html.document.write("</body></html>");
+            setTimeout(function() {
+              document_html.print();
+              document_html.document.close();
+              document_html.focus();
+              document_html.close();
+              return true;
+            }, 2000)
+          }
+    </script>
+    
+{% endblock %}

@@ -1,0 +1,160 @@
+<!-- {% load static %} -->
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <!-- {% block title %}<title>Factura No. {{ venta.id }} </title>{% endblock %} -->
+	<script src="{% static 'lib2/jquery-3.2.1.min.js' %}"></script>
+    <!-- <script src="{% static 'lib/bootstrap-4.4.1-dist/bootstrap.min.css' %}" ></script>
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}"> -->
+		
+    <style type="text/css" media="all">
+      body { 
+        max-width: 300px; 
+        margin:0 auto; 
+        color:#000; 
+        font-family: Arial, Helvetica, sans-serif; 
+      }
+      #wrapper { 
+        margin-left: 10px;
+        min-width: 290px; 
+        margin: 0px auto; 
+      }
+      #wrapper img { 
+        display: block;
+        margin: auto;
+        max-width: 300px;        
+      }
+      h2, h3, p { 
+        margin: 5px 0;
+        text-align: center;
+      }
+      h2{
+        font-size: 18px;
+      }
+      .left { 
+        width:100%; 
+        float:right; 
+        text-align:right; 
+        margin-bottom: 3px;
+        margin-top: 3px;
+        margin-right: 10px;
+        font-size: 11px;
+      }
+      .right { 
+        width:40%; 
+        float:right; 
+        text-align:right; 
+        margin-bottom: 10px; 
+      }
+      .table, .totals { 
+        width: 100%; 
+        margin:10px 0; 
+      }
+      .table th { 
+        border-top: 1px solid #000; 
+        border-bottom: 1px solid #000; 
+        padding-top: 3px;
+        padding-bottom: 2px;
+      }
+      .table td { 
+        padding:0; 
+      }
+      .totals td { 
+        width: 24%; 
+        padding:0; 
+      }
+      .table td:nth-child(2) { 
+        overflow:hidden; 
+      }
+      
+      @page { 
+        /*first value is width second value it height*/
+        size: 311px 768px;
+        }
+    </style>
+  </head>
+  <body>
+
+    <div id="wrapper">
+        <img src="{{ icon }}" class="img-invoice">
+        <br>
+        <h2>{{ empresa.nombre_comercial }}</h2>
+        <br>
+        <span class="left"><strong>Direccion:</strong>{{ empresa.direccion }} </span><br>
+        <span class="left"><strong>Colonia:</strong>{{ empresa.colonia }} </span><br>
+        <span class="left"><strong>Codigo Postal:</strong>{{ empresa.cp }} </span><br>
+        <span class="left"><strong>Localidad:</strong>{{ empresa.localidad }} </span><br>
+        <span class="left"><strong>Telefono:</strong>{{ empresa.telefono }} </span><br>
+        <span class="left"><strong>===========================================.</strong></span><br>
+        <span class="left"><strong>No. Ticket :</strong> {{ sale.id }}</span><br>
+        <span class="left"><strong>Fecha :</strong> {{ sale.date_joined|date:"d/M/Y" }}</span><br>
+        <span class="left"><strong>RFC Cliente :</strong> {{ sale.cli.dni|upper }}</span><br>
+        <span class="left"><strong>Cliente&nbsp;:</strong> {{ sale.cli.names|upper }}</span><br> 
+    </div>
+
+    <div id="wrapper">
+      
+      <div style="clear:both;"></div>
+        
+      <table class="table"> 
+        <thead class="thead-light"> 
+          <tr> 
+            <th style="width: 10%;">CANT</th>
+            <th style="width: 50%;">PRODUCTO</th>
+            <th style="width: 15%;">PRECIO</th>
+            <th style="width: 15%;">TOTAL</th>
+          </tr> 
+        </thead> 
+        <tbody> 
+                <!-- {% for producto in venta.pedido.detallepedido_set.all %}
+                <tr>
+                    <td style="text-align:left; width:130px; padding-bottom: 10px" valign="top">&nbsp;&nbsp;{{producto.producto}}</td>
+                    <td style="text-align:center; width:50px;" valign="top">{{producto.cantidad}}</td>
+                    <td style="text-align:center; width:50px;" valign="top">Q{{producto.precio}}</td>
+                </tr>	
+                {% endfor %} -->
+                
+              {% for d in sale.detsale_set.all %}
+              <tr {% if forloop.first %}style="padding-top: 2px;" {% endif %}>
+                <td style="text-align:center; padding-top: 5px;" valign="top">{{ d.cant }}</td>  
+                <td style="text-align:center; padding-top: 5px;" valign="top">{{ d.prod.name }}</td>
+                <td style="text-align:center; padding-top: 5px;" valign="top">${{ d.price }}</td>
+                <td style="text-align: right; padding-top: 5px;" valign="top">${{ d.subtotal }}</td>
+              </tr>
+              {% endfor %}
+              
+          </tbody> 
+      </table> 
+      
+        
+        <table class="totals" cellspacing="0"  style="margin-bottom:5px; border-top: 1px solid #000; border-collapse: collapse;">
+            <tbody>          
+              <tr>
+                <td colspan="3" style="text-align:left; border-top: 1px solid #000; padding-top: 5px; padding-bottom: 5px;">
+                  <b>Total de la venta :</b>
+                </td>
+                
+                <td style="text-align:left; border-top: 1px solid #000; padding-top: 5px; padding-bottom: 5px;">
+                  $ {{ sale.total }}			
+                </td>
+              </tr>
+            </tbody>
+        </table>
+        
+        <div style="border-top:1px solid #000; padding-top:2px;">
+          <p>****GRACIAS POR SU COMPRA****</p>    
+          <br>
+          <p>NO SE ACEPTAN CAMBIOS NI DEVOLUCIONES</p>
+        </div>
+
+         <!-- No se para que tienen este hidden aqui -->
+        <input type="hidden" id="id" value="{{ sale.id }}" />
+        
+    </div>
+
+    
+    
+  </body>
+</html>

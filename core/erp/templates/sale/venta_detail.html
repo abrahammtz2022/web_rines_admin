@@ -1,0 +1,207 @@
+{% load static %}
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+    
+    {% block title %}<title>Factura No. {{ venta.id }} </title>{% endblock %}
+		<script src="{% static 'lib2/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'lib2/bootstrap-4.4.1-dist/bootstrap.min.css' %}" ></script>
+    <link rel="stylesheet" href="{% static 'lib2/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}">
+		
+    <style type="text/css" media="all">
+      body { 
+        max-width: 300px; 
+        margin:0 auto; 
+        text-align:center; 
+        color:#000; 
+        font-family: Arial, Helvetica, sans-serif; 
+        font-size:12px; 
+      }
+      #wrapper { 
+        min-width: 250px; 
+        margin: 0px auto; 
+      }
+      #wrapper img { 
+        max-width: 300px; 
+        width: auto; 
+        padding-top: 8px;
+      }
+
+      h2, h3, p { 
+        margin: 5px 0;
+      }
+      .left { 
+        width:100%; 
+        float:right; 
+        text-align:right; 
+        margin-bottom: 3px;
+        margin-top: 3px;
+      }
+      .right { 
+        width:40%; 
+        float:right; 
+        text-align:right; 
+        margin-bottom: 3px; 
+      }
+      .table, .totals { 
+        width: 100%; 
+        margin:10px 0; 
+      }
+      .table th { 
+        border-top: 1px solid #000; 
+        border-bottom: 1px solid #000; 
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+      .table td { 
+        padding:0; 
+      }
+      .totals td { 
+        width: 24%; 
+        padding:0; 
+      }
+      .table td:nth-child(2) { 
+        overflow:hidden; 
+      }
+      @media print {
+        body { text-transform: uppercase; }
+        #buttons { display: none; }
+        #wrapper { width: 100%; margin: 0; font-size:9px; }
+        #wrapper img { max-width:300px; width: 80%; }
+        #bkpos_wrp{
+          display: none;
+        }
+      }
+      
+    </style>
+
+  </head>
+
+  <body>
+    
+    <div id="wrapper">
+      <table style="padding-top: 5px; border-collapse: collapse; width: 100%; height: auto;">
+          <tr>
+            <td width="100%" >
+              
+                <img src="{% static 'img/el_rinero.png' %}" style="width: 300px;" />
+              
+            </td>
+          </tr>
+          <tr>
+            <td width="100%" >
+              <h2 style="padding-top: 0px; font-size: 24px;"><strong>{{ empresa.nombre_comercial }}</strong></h2>
+            </td>
+          </tr>
+        <tr>
+          <td width="100%">
+            <br>	
+            <span class="left" style="text-align: left;"><strong>Dirección :</strong> {{ empresa.direccion }}</span>	
+            <span class="left" style="text-align: left;"><strong>Colonia :</strong> {{ empresa.colonia }}</span>	
+            <span class="left" style="text-align: left;"><strong>Codigo Postal :</strong> {{ empresa.cp }}</span>	
+            <span class="left" style="text-align: left;"><strong>Localidad :</strong> {{ empresa.localidad }} </span> 
+            <span class="left" style="text-align: left;"><strong>Telefono :</strong> {{ empresa.telefono }}</span>	
+            <span class="left" style="text-align: left;"><strong>.==========================================.</strong></span>	
+            <span class="left" style="text-align: left;"><strong>No. Ticket :</strong> {{ sale.id }}</span>
+            <span class="left" style="text-align: left;"><strong>Fecha :</strong> {{ sale.date_joined|date:"d/M/Y" }}</span>
+            <span class="left" style="text-align: left;"><strong>RFC Cliente :</strong> {{ sale.cli.dni|upper }}</span>
+            <span class="left" style="text-align: left;"><strong>Cliente&nbsp;:</strong> {{ sale.cli.names|upper }}</span> 
+            
+          </td>
+        </tr>   
+        </table>
+          
+      <div style="clear:both;"></div>
+        
+      <table class="table"> 
+        <thead> 
+          <tr> 
+            <!-- <th width="45%">Productos</th>
+            <th width="5%">Cantidad</th>
+            <th width="35%">Precio</th>
+
+            <th style="width: 20%;">CATEGORIA</th> -->
+            <th style="width: 10%;">CANT</th>
+            <th style="width: 50%;">PRODUCTO</th>
+            <th style="width: 15%;">PRECIO</th>
+            <th style="width: 15%;">TOTAL</th>
+          </tr> 
+        </thead> 
+        <tbody> 
+                <!-- {% for producto in venta.pedido.detallepedido_set.all %}
+                <tr>
+                    <td style="text-align:left; width:130px; padding-bottom: 10px" valign="top">&nbsp;&nbsp;{{producto.producto}}</td>
+                    <td style="text-align:center; width:50px;" valign="top">{{producto.cantidad}}</td>
+                    <td style="text-align:center; width:50px;" valign="top">Q{{producto.precio}}</td>
+                </tr>	
+                {% endfor %} -->
+                
+              {% for d in sale.detsale_set.all %}
+              <tr {% if forloop.first %}style="padding-top: 3px;" {% endif %}>
+                <td class="text-center">{{ d.cant }}</td>  
+                <td>{{ d.prod.name }}</td>
+                <td class="text-center">${{ d.price }}</td>
+                <td style="text-align: right;">${{ d.subtotal }}</td>
+              </tr>
+              {% endfor %}
+              
+          </tbody> 
+      </table> 
+      
+        
+        <table class="totals" cellspacing="0"  style="margin-bottom:5px; border-top: 1px solid #000; border-collapse: collapse;">
+            <tbody>          
+              <tr>
+                <td colspan="3" style="text-align:left; border-top: 1px solid #000; padding-top: 5px; padding-bottom: 5px;">
+                  <b>Total de la venta :</b>
+                </td>
+                
+                <td style="text-align:right; border-top: 1px solid #000; padding-top: 5px; padding-bottom: 5px;">
+                  $ {{ sale.total }}			
+                </td>
+              </tr>
+            </tbody>
+        </table>
+        
+        <div style="border-top:1px solid #000; padding-top:0px;">
+          <p>****GRACIAS POR SU COMPRA****</p>    
+          <p></p>
+          <p>NO SE ACEPTAN CAMBIOS NI DEVOLUCIONES</p>
+        </div>
+
+        <!-- Botones -->
+        <div id="bkpos_wrp">
+          <!-- <a href="" type="button" onClick="window.close();" style="width:100%; display:block; font-size:12px; text-decoration: none; text-align:center; color:#FFF; background-color:#005b8a; border:0px solid #007FFF; padding: 10px 1px; margin: 5px auto 10px auto; font-weight:bold;">Volver al Sistema</a> -->
+          <!-- <button type="button" onclick="windowClose()" style="width:100%; cursor:pointer; display:block; font-size:12px; text-decoration: none; text-align:center; color:#FFF; background-color:#005b8a; border:0px solid #007FFF; padding: 10px 1px; margin: 5px auto 10px auto; font-weight:bold;" >Cerrar Vista</button> -->
+          <!-- <button type="button" class="btn btn-danger">Danger</button> -->
+        </div>
+        
+        <div id="bkpos_wrp">
+          <button type="button" onClick="window.print();return false;" style="width:101%; cursor:pointer; font-size:15px; background-color:#FFA93C; color:#000; text-align: center; border:2px solid #FFA93C; padding: 10px 0px; font-weight:bold;">Imprimir Ticket</button>
+        </div>
+        
+        <!-- No se para que tienen este hidden aqui -->
+        <input type="hidden" id="id" value="{{ sale.id }}" />
+        
+    </div>
+
+    <!-- Quita cosas demas en impresion -->
+    <style media="print">
+      @page {
+       size: auto;
+       margin: 0;
+            }
+     </style>
+
+    <!-- Imprimir Factura -->
+    <script type="text/javascript">
+      
+        window.onload = function() {
+          //window.print(); return false;
+        };
+
+    </script>
+    
+  </body>
+</html>
