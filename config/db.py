@@ -22,6 +22,18 @@ POSTGRESQL = {
     }
 }
 
+#conectar nube
+NUBEWEB = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'wAI7OA96tpck5k16OSzZ',
+        'HOST': 'containers-us-west-95.railway.app',
+        'PORT': '7572'
+    }
+}
+
 # mysqlclient
 
 MYSQL = {
